@@ -1,0 +1,41 @@
+{
+    "name": "bouzentm/laravel-queue-debounce",
+    "description": "Leading-edge debounce for Laravel queued jobs. One job per debounce window, atomic Redis gating, crash recovery.",
+    "keywords": ["laravel", "queue", "debounce", "redis", "jobs", "deduplication"],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Mohamed Bouzentm",
+            "email": "dev@selego.co"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/bus": "^12.0",
+        "illuminate/queue": "^12.0",
+        "illuminate/redis": "^12.0",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bouzentm\\LaravelQueueDebounce\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bouzentm\\LaravelQueueDebounce\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": []
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
