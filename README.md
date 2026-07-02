@@ -1,12 +1,12 @@
 # Laravel Queue Debounce
 
-Leading-edge debounce for Laravel queued jobs. One job per debounce window, atomic Redis gating, crash recovery.
+Dispatch-time debounce for Laravel queued jobs. One job per debounce window, atomic Redis gating, crash recovery.
 
 Works with **any Laravel queue driver**: Redis, SQS, Database, etc.
 
-**The problem:** Webhooks, event listeners, and real-time triggers fire multiple times for the same entity within seconds. Without debouncing, you get duplicate jobs flooding your queue — wasted workers, inflated stats, and race conditions.
+**The problem:** Webhooks, event listeners, and real-time triggers fire multiple times for the same entity within seconds. Without debouncing, you get duplicate jobs flooding your queue.
 
-**This package** gates at dispatch time using Redis GETSET — only 1 job enters the queue per debounce window. Subsequent calls are true no-ops (nothing queued). Clean queue stats, full crash recovery.
+**This package** gates at dispatch time using Redis GETSET — only 1 job enters the queue per debounce window. Subsequent calls are no-ops (nothing queued).
 
 ## How it works
 
@@ -161,7 +161,7 @@ Uses Redis `GETSET` for atomic dispatch-time gating:
 3. If old value is in the future → job already pending, skip
 4. Middleware runs after `handle()` → deletes key only if not released → opens window for next cycle
 
-This is a **leading-edge** debounce: first event triggers execution after the delay. Subsequent events during the window are dropped.
+The first event triggers execution after the delay. Subsequent events during the window are dropped.
 
 ## Testing
 

@@ -5,7 +5,7 @@ namespace Bouzentm\LaravelQueueDebounce;
 use Illuminate\Support\Facades\Redis;
 
 /**
- * Leading-edge debounce for Laravel queued jobs. First dispatch queues the job,
+ * Dispatch-time debounce for Laravel queued jobs. First dispatch queues the job,
  * subsequent dispatches within the delay window are no-ops.
  * After execution, the cache key is cleaned up — ready for the next trigger.
  * Recovers from crashed jobs: if the stored timestamp has elapsed but the key
