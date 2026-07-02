@@ -79,13 +79,13 @@ That's it. Same constructor args, same queue, same everything — just debounced
 
 ### 3. Merging with other middleware
 
-If your job needs additional middleware (e.g. `WithoutOverlapping`), override `middleware()` and merge:
+The trait defines `middleware()` which cleans up the Redis key before `handle()` runs. If your job needs additional middleware (e.g. `WithoutOverlapping`), override `middleware()` and merge with `parent::middleware()`:
 
 ```php
 public function middleware(): array
 {
     return [
-        ...$this->debounceMiddleware(),
+        ...parent::middleware(),
         new WithoutOverlapping($this->contactId),
     ];
 }
