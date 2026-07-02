@@ -55,27 +55,21 @@ trait Debounceable
     }
 
     /**
-     * Laravel queue convention: if a job defines a middleware() method,
-     * CallQueuedHandler applies it before handle().
-     * Laravel checks via method_exists(). Same pattern as WithoutOverlapping,
-     * RateLimited, ThrottlesExceptions.
+     * Returns the debounce cleanup middleware. Deletes the Redis key
+     * before handle() runs, opening the window for the next debounce cycle.
      *
-     * Cleans up the Redis debounce key before the job executes,
-     * opening the window for the next debounce cycle.
-     *
-     * If your job needs additional middleware, override this method and merge:
+     * Called by middleware() below. If your job needs additional middleware,
+     * override middleware() and merge:
      *
      *   public function middleware(): array
      *   {
      *       return [
-     *           ...parent::middleware(),
+     *           ...$this->debounceMiddleware(),
      *           new WithoutOverlapping($this->id),
      *       ];
      *   }
-     *
-     * @see \Illuminate\Queue\CallQueuedHandler::dispatchThroughMiddleware
      */
-    public function middleware(): array
+    protected function debounceMiddleware(): array
     {
         $cleanup = function ($job, $next) {
             Redis::del($this->debounceKey());
@@ -83,5 +77,18 @@ trait Debounceable
         };
 
         return [$cleanup];
+    }
+
+    /**
+     * Laravel queue convention: if a job defines a middleware() method,
+     * CallQueuedHandler applies it before handle(). No interface needed —
+     * Laravel checks via method_exists(). Same pattern as WithoutOverlapping,
+     * RateLimited, ThrottlesExceptions.
+     *
+     * @see \Illuminate\Queue\CallQueuedHandler::dispatchThroughMiddleware
+     */
+    public function middleware(): array
+    {
+        return $this->debounceMiddleware();
     }
 }
