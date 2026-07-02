@@ -61,14 +61,15 @@ class SyncContactJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     use Debounceable;
 
-    protected int $debounceDelay = 30; // seconds
-
     protected function debounceKey(): string
     {
         return 'sync-contact:' . $this->contactId;
     }
 
-    public function __construct(public int $contactId) {}
+    public function __construct(public int $contactId)
+    {
+        $this->debounceDelay = 30; // seconds
+    }
 
     public function handle(): void
     {
@@ -98,8 +99,6 @@ class UpdateTicketJob implements ShouldQueue
 {
     use Debounceable;
 
-    protected int $debounceDelay = 60;
-
     protected function debounceKey(): string
     {
         return "update-ticket:{$this->ticketId}:{$this->updateType}";
@@ -108,7 +107,9 @@ class UpdateTicketJob implements ShouldQueue
     public function __construct(
         public int $ticketId,
         public string $updateType
-    ) {}
+    ) {
+        $this->debounceDelay = 60;
+    }
 }
 
 // These are DIFFERENT debounce windows:
