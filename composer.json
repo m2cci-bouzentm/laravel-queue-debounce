@@ -1,6 +1,6 @@
 {
     "name": "bouzentm/laravel-queue-debounce",
-    "description": "Leading-edge debounce for Laravel queued jobs. One job per debounce window, atomic Redis gating, crash recovery.",
+    "description": "Dispatch-time debounce for Laravel queued jobs. One job per debounce window, atomic Redis gating, crash recovery.",
     "keywords": ["laravel", "queue", "debounce", "redis", "jobs", "deduplication"],
     "license": "MIT",
     "type": "library",

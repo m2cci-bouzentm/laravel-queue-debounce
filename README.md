@@ -138,6 +138,32 @@ public function middleware(): array
 | `$debounceDelay` | `60` | Seconds to delay execution. During this window, subsequent `debounce()` calls are no-ops. |
 | `debounceKey()` | (abstract) | Unique key for the debounce window. Include entity identifiers for proper scoping. |
 
+### Custom debounce delay (PHP 8.4+)
+
+The trait declares `protected int $debounceDelay = 60`. On PHP 8.4+, redeclaring the property in your job with a different default causes a `FatalError`:
+
+```
+App\Jobs\MyJob and Debounceable define the same property ($debounceDelay)
+in the composition of App\Jobs\MyJob. However, the definition differs
+and is considered incompatible.
+```
+
+Set the delay in your constructor instead:
+
+```php
+class PrepareReplyJob implements ShouldQueue
+{
+    use Debounceable;
+
+    // Don't redeclare $debounceDelay here
+
+    public function __construct(public int $contactId)
+    {
+        $this->debounceDelay = 1200; // 20 minutes
+    }
+}
+```
+
 ## Crash recovery
 
 If a job crashes without cleanup (worker killed, OOM, etc.), the Redis key holds an expired timestamp. The next `debounce()` call detects this and re-queues:
