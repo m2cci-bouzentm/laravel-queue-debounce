@@ -72,8 +72,10 @@ trait Debounceable
     protected function debounceMiddleware(): array
     {
         $cleanup = function ($job, $next) {
-            Redis::del($this->debounceKey());
             $next($job);
+            if (!$job->job->isReleased()) {
+                Redis::del($this->debounceKey());
+            }
         };
 
         return [$cleanup];
